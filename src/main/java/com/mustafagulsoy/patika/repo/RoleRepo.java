@@ -1,11 +1,11 @@
-package com.UlimaStella.Doga_Server_Demo.repo;
+package com.mustafagulsoy.patika.repo;
 
-import com.UlimaStella.Doga_Server_Demo.domain.Role;
+import com.mustafagulsoy.patika.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleRepo  extends JpaRepository<Role,Long> {
 
     Role findByName(String name);
-
+    Role findRoleById(Long id);
 
 }

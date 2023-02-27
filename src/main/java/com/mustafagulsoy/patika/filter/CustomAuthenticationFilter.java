@@ -1,4 +1,4 @@
-package com.UlimaStella.Doga_Server_Demo.filter;
+package com.mustafagulsoy.patika.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -65,7 +65,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
 
 //        response.setHeader("access_token",accessToken);
-//
+
 //        response.setHeader("refresh_token",refreshToken);
         Map<String, String> tokens = new HashMap<>();
 

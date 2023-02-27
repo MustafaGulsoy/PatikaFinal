@@ -1,10 +1,10 @@
-package com.UlimaStella.Doga_Server_Demo;
+package com.mustafagulsoy.patika;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DogaServerDemoApplicationTests {
+class PatikaDemoApplicationTests {
 
 	@Test
 	void contextLoads() {

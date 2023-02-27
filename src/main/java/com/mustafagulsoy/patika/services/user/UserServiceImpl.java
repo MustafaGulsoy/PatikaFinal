@@ -1,9 +1,9 @@
-package com.UlimaStella.Doga_Server_Demo.services;
+package com.mustafagulsoy.patika.services.user;
 
-import com.UlimaStella.Doga_Server_Demo.domain.Role;
-import com.UlimaStella.Doga_Server_Demo.domain.User;
-import com.UlimaStella.Doga_Server_Demo.repo.RoleRepo;
-import com.UlimaStella.Doga_Server_Demo.repo.UserRepo;
+import com.mustafagulsoy.patika.entity.Role;
+import com.mustafagulsoy.patika.entity.User;
+import com.mustafagulsoy.patika.repo.RoleRepo;
+import com.mustafagulsoy.patika.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,9 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,19 +40,63 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         });
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
-
     @Override
     public User saveUser(User user) {
-        log.info("Saving new user to the database");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepo.save(user);
+        if (userRepo.findUserById(user.getId()) != null) {
+            log.info("This username is already using.");
+
+            return null;
+        } else {
+            log.info("Saving new user to the database");
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepo.save(user);
+            return user;
+        }
     }
+
+    @Override
+    public User deleteUser(long id) {
+
+        User user = userRepo.findUserById(id);
+        if (user != null) {
+            log.info("Deleting user (id : {}) from the database", id);
+            userRepo.delete(user);
+            return user;
+        } else return null;
+    }
+
 
     @Override
     public Role saveRole(Role role) {
 
-        log.info("Saving new {} to the database", role.getName());
-        return roleRepo.save(role);
+        if(roleRepo.findRoleById(role.getId()) == null)
+        {
+            log.info("Saving new {} to the database", role.getName());
+            return roleRepo.save(role);
+
+        }
+        log.info("Role of {} is already registered on database", role.getName());
+        return null;
+
+
+    }
+    @Override
+    public User updateUser(User user) {
+
+
+        User userFromDb = userRepo.findUserById(user.getId());
+        // crush the variables of the object found
+
+        if (userFromDb != null) {
+            log.info("Update user (id : {}) from the database", user.getId());
+            userFromDb.setName(user.getName());
+            userFromDb.setRoles(user.getRoles());
+            userRepo.save(userFromDb);
+
+
+            return userFromDb;
+        } else return null;
     }
 
     @Override
@@ -79,6 +121,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("getting all user from the database");
         return userRepo.findAll();
     }
+
+
 
 
 }

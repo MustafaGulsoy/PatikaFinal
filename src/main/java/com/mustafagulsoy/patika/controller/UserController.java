@@ -1,27 +1,21 @@
-package com.UlimaStella.Doga_Server_Demo.controller;
+package com.mustafagulsoy.patika.controller;
 
 
-import com.UlimaStella.Doga_Server_Demo.domain.Role;
-import com.UlimaStella.Doga_Server_Demo.domain.User;
-import com.UlimaStella.Doga_Server_Demo.services.UserService;
+import com.mustafagulsoy.patika.dto.RoleToUser;
+import com.mustafagulsoy.patika.entity.Role;
+import com.mustafagulsoy.patika.entity.User;
+import com.mustafagulsoy.patika.services.user.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.Servlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -39,6 +33,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 public class UserController {
     private final UserService userService;
 
+
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
@@ -51,9 +46,9 @@ public class UserController {
     }
 
     @PostMapping("/role/save")
-    public ResponseEntity<User> saveRole(@RequestBody User user) {
+    public ResponseEntity<Role> saveRole(@RequestBody Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveUser(user));
+        return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
     @PostMapping("/role/addtouser")
@@ -81,18 +76,16 @@ public class UserController {
 
                 String accessToken = JWT.create()
                         .withSubject(user.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10*60*1000))
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles",user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
+                        .withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
                         .sign(algorithm);
-
-
 
 
                 Map<String, String> tokens = new HashMap<>();
 
-                tokens.put("access_token",accessToken);
-                tokens.put("refreshToken",refreshToken);
+                tokens.put("access_token", accessToken);
+                tokens.put("refreshToken", refreshToken);
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
@@ -109,17 +102,10 @@ public class UserController {
                 new ObjectMapper().writeValue(response.getOutputStream(), error);
             }
         } else {
-          throw new RuntimeException("Refresh token is missing");
+            throw new RuntimeException("Refresh token is missing");
         }
 
     }
 
-
-}
-
-@Data
-class RoleToUser {
-    private String username;
-    private String roleName;
 
 }

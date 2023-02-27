@@ -8,10 +8,10 @@
 		<version>2.7.7-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.UltimaStella</groupId>
-	<artifactId>demo</artifactId>
+	<groupId>com.mustafagulsoy</groupId>
+	<artifactId>PatikaFinalCase</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>PatikaFinalCase</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
